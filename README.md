@@ -8,3 +8,7 @@ It's a plugin for Visual Studio Code. This plugin makes inspection in pubspec.ya
 
 Initial release.
 
+
+## test
+
+vsce package 

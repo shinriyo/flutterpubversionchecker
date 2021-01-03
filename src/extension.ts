@@ -4,28 +4,33 @@
 
 import * as vscode from 'vscode';
 import { subscribeToDocumentChanges, EMOJI_MENTION } from './diagnostics';
+const semverRegex = require('semver-regex');
 
-const COMMAND = 'code-actions-sample.command';
+const COMMAND = 'flutter-pub-version.command';
 
 export function activate(context: vscode.ExtensionContext) {
-	context.subscriptions.push(
-		vscode.languages.registerCodeActionsProvider('markdown', new Emojizer(), {
-			providedCodeActionKinds: Emojizer.providedCodeActionKinds
-		}));
-
 	const emojiDiagnostics = vscode.languages.createDiagnosticCollection("emoji");
 	context.subscriptions.push(emojiDiagnostics);
 
+	// under wave
 	subscribeToDocumentChanges(context, emojiDiagnostics);
 
 	context.subscriptions.push(
-		vscode.languages.registerCodeActionsProvider('markdown', new Emojinfo(), {
+		vscode.languages.registerCodeActionsProvider('yaml', new Emojizer(), {
+			providedCodeActionKinds: Emojizer.providedCodeActionKinds
+		}));
+
+	context.subscriptions.push(
+		vscode.languages.registerCodeActionsProvider('yaml', new Emojinfo(), {
 			providedCodeActionKinds: Emojinfo.providedCodeActionKinds
 		})
 	);
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand(COMMAND, () => vscode.env.openExternal(vscode.Uri.parse('https://unicode.org/emoji/charts-12.0/full-emoji-list.html')))
+		vscode.commands.registerCommand(COMMAND, () => {
+			// TODO:
+			vscode.env.openExternal(vscode.Uri.parse('https://unicode.org/emoji/charts-12.0/full-emoji-list.html'))
+		})
 	);
 }
 
@@ -43,21 +48,16 @@ export class Emojizer implements vscode.CodeActionProvider {
 			return;
 		}
 
-		const replaceWithSmileyCatFix = this.createFix(document, range, '😺');
-
+		// TODO: fix later for version
 		const replaceWithSmileyFix = this.createFix(document, range, '😀');
 		// Marking a single fix as `preferred` means that users can apply it with a
 		// single keyboard shortcut using the `Auto Fix` command.
 		replaceWithSmileyFix.isPreferred = true;
 
-		const replaceWithSmileyHankyFix = this.createFix(document, range, '💩');
-
 		const commandAction = this.createCommand();
 
 		return [
-			replaceWithSmileyCatFix,
 			replaceWithSmileyFix,
-			replaceWithSmileyHankyFix,
 			commandAction
 		];
 	}
@@ -65,7 +65,17 @@ export class Emojizer implements vscode.CodeActionProvider {
 	private isAtStartOfSmiley(document: vscode.TextDocument, range: vscode.Range) {
 		const start = range.start;
 		const line = document.lineAt(start.line);
-		return line.text[start.character] === ':' && line.text[start.character + 1] === ')';
+		// TODO: version pattern
+		// return line.text[start.character] === ':' && line.text[start.character + 1] === ')';
+
+		const splited = line.text.split(": ")
+		if (splited.length != 2) {
+			return false;
+		}
+
+		// semverRegex can't check ^, so removed.
+		const ok = semverRegex().test(splited[1].replace("^", ""));
+		return ok;
 	}
 
 	private createFix(document: vscode.TextDocument, range: vscode.Range, emoji: string): vscode.CodeAction {
