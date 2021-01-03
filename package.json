@@ -2,6 +2,14 @@
 	"name": "flutter-pub-version-checker",
 	"displayName": "Flutter Pub Version Checker",
 	"description": "It's a plugin for Visual Studio Code. This plugin makes inspection in pubspec.yaml file for Flutter dependencies. It compares the version with the latest versions from Dart packages repository. You can also use quick fix action to update dependency.",
+	"publisher": "shinriyo",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/shinriyo/flutterpubversionchecker"
+	},
+	"bugs": {
+		"url": "https://github.com/shinriyo/flutterpubversionchecker/issues"
+	},
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.52.0"
@@ -10,17 +18,10 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:flutter-pub-version-checker.helloWorld"
+		"onLanguage:yml",
+		"onLanguage:markdown"
 	],
 	"main": "./dist/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "flutter-pub-version-checker.helloWorld",
-				"title": "Hello World"
-			}
-		]
-	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",
 		"compile": "webpack --config ./build/node-extension.webpack.config.js",
