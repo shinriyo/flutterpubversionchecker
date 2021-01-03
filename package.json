@@ -18,8 +18,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onLanguage:yml",
-		"onLanguage:markdown"
+		"onLanguage:yaml"
 	],
 	"main": "./dist/extension.js",
 	"scripts": {
